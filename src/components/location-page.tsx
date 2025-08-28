@@ -10,101 +10,51 @@ import { useState, useEffect } from "react"
 import { client } from "../../sanity/lib/client"
 import { SERVICES_QUERY, SITE_SETTINGS_QUERY } from "../../sanity/lib/queries"
 import { urlFor } from "../../sanity/lib/image"
-
-interface LocationData {
-  _id: string
-  name: string
-  slug: { current: string }
-  region: string
-  population: string
-  description: string
-  localInfo: string
-  serviceHighlights: string[]
-  nearbyAreas: string[]
-  localKeywords?: string[]
-  testimonials?: Array<{
-    _id: string
-    customerName: string
-    location: string
-    text: string
-    rating: number
-    avatar?: any
-  }>
-  featuredImage?: any
-}
-
-interface Service {
-  _id: string
-  title: string
-  description: string
-  price: string
-  features: string[]
-  status: string
-}
-
-interface SiteSettings {
-  companyName: string
-  phoneNumber: string
-  email: string
-  logo?: any
-}
+import type { LOCATION_QUERYResult, SERVICES_QUERYResult, SITE_SETTINGS_QUERYResult } from "../../sanity/types"
 
 interface LocationPageProps {
-  location: LocationData
+  location: LOCATION_QUERYResult
 }
 
 export default function LocationPage({ location }: LocationPageProps) {
-  const [services, setServices] = useState<Service[]>([])
-  const [siteSettings, setSiteSettings] = useState<SiteSettings>({
-    companyName: "WESPVRIJ",
-    phoneNumber: "06-53809593", 
-    email: "info@wespvrij.nl"
-  })
+  const [services, setServices] = useState<SERVICES_QUERYResult>([])
+  const [siteSettings, setSiteSettings] = useState<SITE_SETTINGS_QUERYResult | null>(null)
 
   useEffect(() => {
-    const fetchData = async () => {
+    async function fetchData() {
       try {
         const [servicesData, settingsData] = await Promise.all([
           client.fetch(SERVICES_QUERY),
           client.fetch(SITE_SETTINGS_QUERY)
         ])
-        
-        if (servicesData) setServices(servicesData)
-        if (settingsData) setSiteSettings(settingsData)
+        setServices(servicesData || [])
+        setSiteSettings(settingsData || null)
       } catch (error) {
         console.error('Error fetching data:', error)
-        // Fallback services if Sanity is not available
-        setServices([
-          {
-            _id: "1",
-            title: "Wespenbestrijding",
-            description: `Professionele wespenbestrijding in ${location.name}`,
-            price: "€89",
-            features: ["24/7 beschikbaar", "Seizoensgarantie", "Veilige verwijdering"],
-            status: "popular"
-          },
-          {
-            _id: "2", 
-            title: "Hoornaarbestrijding",
-            description: `Specialistische hoornaarbestrijding ${location.name}`,
-            price: "€129",
-            features: ["Gespecialiseerde uitrusting", "Ervaren technici", "Volledige verwijdering"],
-            status: "active"
-          },
-          {
-            _id: "3",
-            title: "Preventieve behandeling", 
-            description: `Voorkom wespenkolonies in ${location.name}`,
-            price: "€59",
-            features: ["Seizoensbehandeling", "Natuurlijke middelen", "Jaarlijkse controle"],
-            status: "active"
-          }
-        ])
       }
     }
-
+    
     fetchData()
-  }, [location.name])
+  }, [])
+
+  // Fallback values when siteSettings is null
+  const settings = siteSettings || {
+    _id: 'fallback',
+    companyName: "WESPVRIJ",
+    tagline: "Professionele wespenbestrijding in Noord-Holland",
+    phoneNumber: "06-53809593", 
+    email: "info@wespvrij.nl",
+    serviceArea: null,
+    availability: null,
+    guaranteeText: null,
+    experienceYears: null,
+    customerCount: null,
+    averageRating: null,
+    defaultMetaTitle: null,
+    defaultMetaDescription: null,
+    logo: null,
+    socialMediaLinks: null
+  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -113,15 +63,15 @@ export default function LocationPage({ location }: LocationPageProps) {
         <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center space-x-2 sm:space-x-3">
-              {siteSettings.logo ? (
-                <Image
-                  src={urlFor(siteSettings.logo).width(200).height(80).url()}
-                  alt={`${siteSettings.companyName} Logo`}
-                  width={100}
-                  height={40}
-                  className="h-8 sm:h-10 w-auto"
-                />
-              ) : (
+                             {settings.logo ? (
+                 <Image
+                   src={urlFor(settings.logo as any).width(200).height(80).url()} // eslint-disable-line @typescript-eslint/no-explicit-any
+                   alt={`${settings.companyName} Logo`}
+                   width={100}
+                   height={40}
+                   className="h-8 sm:h-10 w-auto"
+                 />
+               ) : (
                 <Image
                   src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo_wespvrij_500x100px-ZEM7a6VOksBN7iQLtMl6C4EUxclALl.png"
                   alt="WESPVRIJ Logo"
@@ -153,9 +103,9 @@ export default function LocationPage({ location }: LocationPageProps) {
                 Reviews
               </Link>
               <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white px-6" asChild>
-                <a href={`tel:${siteSettings.phoneNumber?.replace(/\s/g, '')}`}>
+                <a href={`tel:${settings.phoneNumber?.replace(/\s/g, '')}`}>
                   <Phone className="w-4 h-4 mr-2" />
-                  {siteSettings.phoneNumber}
+                  {settings.phoneNumber}
                 </a>
               </Button>
             </nav>
@@ -163,7 +113,7 @@ export default function LocationPage({ location }: LocationPageProps) {
             {/* Mobile Phone Button */}
             <div className="md:hidden">
               <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white px-4 py-2" asChild>
-                <a href={`tel:${siteSettings.phoneNumber?.replace(/\s/g, '')}`}>
+                <a href={`tel:${settings.phoneNumber?.replace(/\s/g, '')}`}>
                   <Phone className="w-4 h-4 mr-2" />
                   Bellen
                 </a>
@@ -181,7 +131,7 @@ export default function LocationPage({ location }: LocationPageProps) {
               <div className="space-y-4">
                 <Badge className="bg-green-100 text-green-700 border-green-200 text-sm px-3 py-1">
                   <MapPin className="w-3 h-3 mr-1" />
-                  {location.region}
+                  {location?.region || 'Noord-Holland'}
                 </Badge>
                 <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
                   Wespenbestrijding
@@ -209,7 +159,7 @@ export default function LocationPage({ location }: LocationPageProps) {
                   className="bg-green-600 hover:bg-green-700 text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg"
                   asChild
                 >
-                  <a href={`tel:${siteSettings.phoneNumber?.replace(/\s/g, '')}`}>
+                  <a href={`tel:${settings.phoneNumber?.replace(/\s/g, '')}`}>
                     <Phone className="w-5 h-5 mr-2" />
                     Bel Direct
                   </a>
@@ -228,7 +178,7 @@ export default function LocationPage({ location }: LocationPageProps) {
               <div className="relative z-10">
                 {location.featuredImage ? (
                   <Image
-                    src={urlFor(location.featuredImage).width(600).height(500).url()}
+                    src={urlFor(location.featuredImage as any).width(600).height(500).url()} // eslint-disable-line @typescript-eslint/no-explicit-any
                     alt={`Wespenbestrijding ${location.name}`}
                     width={500}
                     height={500}
@@ -381,12 +331,12 @@ export default function LocationPage({ location }: LocationPageProps) {
                         <Star key={i} className="w-4 h-4 sm:w-5 sm:h-5 fill-yellow-400 text-yellow-400" />
                       ))}
                     </div>
-                    <p className="text-gray-700 leading-relaxed text-sm sm:text-base">"{testimonial.text}"</p>
+                    <p className="text-gray-700 leading-relaxed text-sm sm:text-base">&ldquo;{testimonial.text}&rdquo;</p>
                     <div className="flex items-center space-x-3 sm:space-x-4">
                       {testimonial.avatar ? (
                         <Image
-                          src={urlFor(testimonial.avatar).width(48).height(48).url()}
-                          alt={testimonial.customerName}
+                          src={urlFor(testimonial.avatar as any).width(48).height(48).url()} // eslint-disable-line @typescript-eslint/no-explicit-any
+                          alt={testimonial.customerName || 'Customer avatar'}
                           width={40}
                           height={40}
                           className="rounded-full sm:w-12 sm:h-12"
@@ -394,12 +344,12 @@ export default function LocationPage({ location }: LocationPageProps) {
                       ) : (
                         <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-200 rounded-full flex items-center justify-center">
                           <span className="text-gray-600 font-medium text-sm">
-                            {testimonial.customerName.split(' ').map(n => n[0]).join('')}
+                            {testimonial.customerName?.split(' ').map(n => n[0]).join('') || 'U'}
                           </span>
                         </div>
                       )}
                       <div>
-                        <p className="font-semibold text-gray-900 text-sm sm:text-base">{testimonial.customerName}</p>
+                        <p className="font-semibold text-gray-900 text-sm sm:text-base">{testimonial.customerName || 'Anonymous'}</p>
                         <p className="text-xs sm:text-sm text-gray-500">{testimonial.location}</p>
                       </div>
                     </div>
@@ -451,9 +401,9 @@ export default function LocationPage({ location }: LocationPageProps) {
                 className="bg-white text-green-600 hover:bg-gray-100 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg"
                 asChild
               >
-                <a href={`tel:${siteSettings.phoneNumber?.replace(/\s/g, '')}`}>
+                <a href={`tel:${settings.phoneNumber?.replace(/\s/g, '')}`}>
                   <Phone className="w-5 h-5 mr-2" />
-                  {siteSettings.phoneNumber}
+                  {settings.phoneNumber}
                 </a>
               </Button>
               <Button
@@ -473,10 +423,10 @@ export default function LocationPage({ location }: LocationPageProps) {
         <div className="container mx-auto px-4 sm:px-6">
           <div className="text-center">
             <Link href="/" className="inline-block mb-6">
-              {siteSettings.logo ? (
+              {settings.logo ? (
                 <Image
-                  src={urlFor(siteSettings.logo).width(240).height(96).url()}
-                  alt={`${siteSettings.companyName} Logo`}
+                  src={urlFor(settings.logo as any).width(240).height(96).url()} // eslint-disable-line @typescript-eslint/no-explicit-any
+                  alt={`${settings.companyName} Logo`}
                   width={120}
                   height={48}
                   className="h-10 sm:h-12 w-auto brightness-0 invert mx-auto"
@@ -495,12 +445,12 @@ export default function LocationPage({ location }: LocationPageProps) {
               Professionele wespenbestrijding in {location.name} en heel Noord-Holland
             </p>
             <div className="flex justify-center space-x-6 text-sm text-gray-400">
-              <span>📞 {siteSettings.phoneNumber}</span>
-              <span>📧 {siteSettings.email}</span>
+              <span>📞 {settings.phoneNumber}</span>
+              <span>📧 {settings.email}</span>
             </div>
           </div>
           <div className="border-t border-gray-800 mt-8 pt-6 text-center text-gray-400 text-sm">
-            <p>&copy; 2024 {siteSettings.companyName}. Alle rechten voorbehouden.</p>
+            <p>&copy; 2024 {settings.companyName}. Alle rechten voorbehouden.</p>
           </div>
         </div>
       </footer>

@@ -1,5 +1,3 @@
-"use client"
-
 import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -25,11 +23,13 @@ export default async function HomePage() {
       guaranteeText: "Seizoensgarantie - komt het probleem terug, dan ook wij terug",
       experienceYears: 15,
       customerCount: "1000+",
-      averageRating: 4.9
+      averageRating: 4.9,
+      logo: null
     },
     homepageContent: {
       heroTitle: "Wespvrij binnen 24 uur",
       heroSubtitle: "Gegarandeerd resultaat of geld terug.",
+      heroImage: null,
       features: [
         { icon: "clock", title: "24/7 Service", description: "Ook in weekenden en feestdagen bereikbaar voor spoedgevallen" },
         { icon: "shield", title: "100% Garantie", description: "Seizoensgarantie - komt het probleem terug, dan ook wij terug" },
@@ -43,6 +43,7 @@ export default async function HomePage() {
       ],
       problemTipTitle: "Belangrijke Tip",
       problemTipText: "Probeer vooral de ingang naar het nest niet dicht te stoppen, de wespen zullen altijd een uitweg vinden. Zo kunnen zij ook op andere plekken in uw huis of bedrijfspand te voorschijn komen.",
+      problemImage: null,
       problemStatNumber: "5000",
       problemStatText: "wespen per nest",
       processSectionTitle: "Hoe werkt het?",
@@ -53,6 +54,7 @@ export default async function HomePage() {
         { stepNumber: 3, title: "Veilige behandeling", description: "Professionele verwijdering met gespecialiseerde uitrusting" },
         { stepNumber: 4, title: "Nazorg & garantie", description: "Controle en seizoensgarantie voor uw gemoedsrust" }
       ],
+      processImage: null,
       contactFormTitle: "Gratis Offerte Aanvragen",
       contactFormSubtitle: "Vul het formulier in en ontvang binnen 24 uur een vrijblijvende offerte",
       contactFormButtonText: "Verstuur Aanvraag",
@@ -61,6 +63,7 @@ export default async function HomePage() {
     },
     services: [
       {
+        _id: "fallback-1",
         title: "Wespenbestrijding",
         description: "Professionele verwijdering van wespennesten",
         price: "€89",
@@ -68,6 +71,7 @@ export default async function HomePage() {
         status: "popular"
       },
       {
+        _id: "fallback-2",
         title: "Hoornaarbestrijding", 
         description: "Specialistische behandeling van hoornaren",
         price: "€129",
@@ -75,6 +79,7 @@ export default async function HomePage() {
         status: "active"
       },
       {
+        _id: "fallback-3",
         title: "Preventieve behandeling",
         description: "Voorkom wespenkolonies effectief", 
         price: "€59",
@@ -84,6 +89,7 @@ export default async function HomePage() {
     ],
     testimonials: [
       {
+        _id: "fallback-testimonial-1",
         customerName: "Maria van der Berg",
         location: "Amsterdam",
         rating: 5,
@@ -91,6 +97,7 @@ export default async function HomePage() {
         avatar: null
       },
       {
+        _id: "fallback-testimonial-2",
         customerName: "Jan Pietersen",
         location: "Haarlem", 
         rating: 5,
@@ -98,6 +105,7 @@ export default async function HomePage() {
         avatar: null
       },
       {
+        _id: "fallback-testimonial-3",
         customerName: "Sophie de Wit",
         location: "Alkmaar",
         rating: 5,
@@ -131,7 +139,7 @@ export default async function HomePage() {
             <div className="flex items-center space-x-2 sm:space-x-3">
               {settings.logo ? (
                 <Image
-                  src={urlFor(settings.logo).width(200).height(80).url()}
+                  src={urlFor(settings.logo as any).width(200).height(80).url()} // eslint-disable-line @typescript-eslint/no-explicit-any
                   alt={`${settings.companyName} Logo`}
                   width={100}
                   height={40}
@@ -569,12 +577,12 @@ export default async function HomePage() {
                       <Star key={i} className="w-4 h-4 sm:w-5 sm:h-5 fill-yellow-400 text-yellow-400" />
                     ))}
                   </div>
-                  <p className="text-gray-700 leading-relaxed text-sm sm:text-base">"{review.text}"</p>
+                  <p className="text-gray-700 leading-relaxed text-sm sm:text-base">&ldquo;{review.text}&rdquo;</p>
                   <div className="flex items-center space-x-3 sm:space-x-4">
                     {review.avatar ? (
                       <Image
-                        src={urlFor(review.avatar).width(48).height(48).url()}
-                        alt={review.customerName}
+                        src={urlFor(review.avatar as any).width(48).height(48).url()} // eslint-disable-line @typescript-eslint/no-explicit-any
+                        alt={review.customerName || 'Customer avatar'}
                         width={40}
                         height={40}
                         className="rounded-full sm:w-12 sm:h-12"
@@ -582,12 +590,12 @@ export default async function HomePage() {
                     ) : (
                       <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-200 rounded-full flex items-center justify-center">
                         <span className="text-gray-600 font-medium text-sm">
-                          {review.customerName.split(' ').map(n => n[0]).join('')}
+                          {review.customerName?.split(' ').map(n => n[0]).join('') || 'U'}
                         </span>
                       </div>
                     )}
                     <div>
-                      <p className="font-semibold text-gray-900 text-sm sm:text-base">{review.customerName}</p>
+                      <p className="font-semibold text-gray-900 text-sm sm:text-base">{review.customerName || 'Anonymous'}</p>
                       <p className="text-xs sm:text-sm text-gray-500">{review.location}</p>
                     </div>
                   </div>
@@ -702,7 +710,7 @@ export default async function HomePage() {
             <div className="space-y-4 sm:col-span-2 lg:col-span-1">
               {settings.logo ? (
                 <Image
-                  src={urlFor(settings.logo).width(240).height(96).url()}
+                  src={urlFor(settings.logo as any).width(240).height(96).url()} // eslint-disable-line @typescript-eslint/no-explicit-any
                   alt={`${settings.companyName} Logo`}
                   width={120}
                   height={48}

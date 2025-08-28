@@ -1,36 +1,141 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# WESPVRIJ Website
 
-## Getting Started
+Professional wasp control services website built with Next.js 15 and Sanity CMS.
 
-First, run the development server:
+## 🚀 Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Next.js 15** with App Router and TypeScript
+- **Sanity CMS** for content management
+- **Tailwind CSS** for styling
+- **shadcn/ui** components
+- **Responsive design** for all devices
+- **SEO optimized** with dynamic metadata
+- **Dynamic location pages** 
+- **Contact form** with submission tracking
+
+## 🔧 Technologies
+
+- Next.js 15 (App Router)
+- TypeScript
+- Sanity CMS
+- Tailwind CSS
+- shadcn/ui
+- Lucide React Icons
+
+## 📁 Project Structure
+
+```
+├── src/
+│   ├── app/
+│   │   ├── [slug]/          # Dynamic location pages
+│   │   ├── studio/          # Embedded Sanity Studio
+│   │   ├── globals.css      # Global styles
+│   │   └── page.tsx         # Homepage
+│   ├── components/          # Reusable components
+│   └── lib/                # Utility functions
+├── sanity/
+│   ├── schemaTypes/        # Content schemas
+│   ├── lib/                # Sanity utilities
+│   └── structure.ts        # Studio structure
+└── public/                 # Static assets
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🛠️ Development Setup
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. **Clone the repository:**
+   ```bash
+   git clone [repository-url]
+   cd wespvrij-website
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-## Learn More
+3. **Environment variables:**
+   Create a `.env.local` file with:
+   ```
+   NEXT_PUBLIC_SANITY_PROJECT_ID="6vd5j5gs"
+   NEXT_PUBLIC_SANITY_DATASET="production"
+   NEXT_PUBLIC_SANITY_API_VERSION="2025-08-28"
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+4. **Run development server:**
+   ```bash
+   npm run dev
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+5. **Access the application:**
+   - Website: http://localhost:3000
+   - Sanity Studio: http://localhost:3000/studio
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🌐 Content Management
 
-## Deploy on Vercel
+### Sanity Studio Access
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Local Studio**: http://localhost:3000/studio
+- **Hosted Studio**: https://wespvrij.sanity.studio/
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Content Types
+
+- **Site Settings**: Global website configuration
+- **Homepage Content**: All homepage sections
+- **Services**: Service offerings and pricing
+- **Locations**: Location-specific content
+- **Testimonials**: Customer reviews
+- **Contact Submissions**: Form submission tracking
+
+## 🚀 Deployment
+
+### Vercel Deployment
+
+1. **Connect to GitHub**: Push code to GitHub repository
+2. **Import to Vercel**: Connect your GitHub repository
+3. **Environment Variables**: Add the Sanity configuration:
+   ```
+   NEXT_PUBLIC_SANITY_PROJECT_ID=6vd5j5gs
+   NEXT_PUBLIC_SANITY_DATASET=production
+   NEXT_PUBLIC_SANITY_API_VERSION=2025-08-28
+   ```
+4. **Deploy**: Vercel will automatically build and deploy
+
+### Build Commands
+
+```bash
+# Build for production
+npm run build
+
+# Start production server
+npm run start
+
+# Lint code
+npm run lint
+```
+
+## 📝 Content Editing
+
+All website content can be edited through the Sanity Studio:
+
+1. **Homepage**: Hero section, features, problem info, process steps
+2. **Services**: Service details, pricing, features
+3. **Locations**: Location-specific content and SEO
+4. **Testimonials**: Customer reviews and ratings
+5. **Site Settings**: Company info, contact details, branding
+
+## 🔧 Technical Notes
+
+- Dynamic routes for location pages using `[slug]/page.tsx`
+- GROQ queries for efficient data fetching
+- TypeScript types generated from Sanity schemas
+- Image optimization with Next.js Image component
+- Responsive design with Tailwind CSS
+- SEO optimization with dynamic metadata
+
+## 📞 Support
+
+For technical support or questions about the website, contact the development team.
+
+---
+
+**Built with ❤️ for WESPVRIJ - Professional Wespenbestrijding**
